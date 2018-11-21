@@ -1,0 +1,39 @@
+You can provision an EFS-backed persistent volume with a persistent volume claim like below:
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: my-efs-vol-1
+  annotations:
+    volume.beta.kubernetes.io/storage-class: {{ .Values.efsProvisioner.storageClass.name }}
+spec:
+  storageClassName: {{ .Values.efsProvisioner.storageClass.name }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+
+And run a test pod without
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod
+spec:
+  containers:
+  - name: test-pod
+    image: gcr.io/google_containers/busybox:1.24
+    command:
+      - "/bin/sh"
+    args:
+      - "-c"
+      - "touch /mnt/SUCCESS && exit 0 || exit 1"
+    volumeMounts:
+      - name: efs-pvc
+        mountPath: "/mnt"
+  restartPolicy: "Never"
+  volumes:
+    - name: efs-pvc
+      persistentVolumeClaim:
+        claimName: my-efs-vol-1
