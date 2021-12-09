@@ -13,7 +13,7 @@ You must create the EFS file system firstly.
 
   https://docs.aws.amazon.com/efs/latest/ug/creating-using-create-fs.html
 
-Be sured to include the security group that is used by the cluster workers.
+Be sured to include the security group that is used by the cluster master(s)/workers.
 
 ## Configuring
 
